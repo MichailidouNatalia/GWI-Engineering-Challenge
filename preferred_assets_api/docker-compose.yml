@@ -1,0 +1,40 @@
+services:
+  # Preferred Assets API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: preferred-assets-api:latest
+    container_name: preferred-assets-api
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=master
+      - KEYCLOAK_CLIENT_ID=your-client-id
+      - KEYCLOAK_CLIENT_SECRET=your-client-secret
+      - LOG_LEVEL=debug
+    depends_on:
+      - keycloak
+    volumes:
+      - ./.env:/app/.env  # For local development
+    restart: unless-stopped
+
+  # Keycloak for authentication
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.6
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HEALTH_ENABLED=true
+    ports:
+      - "8090:8080"
+    tmpfs:
+      - /tmp:size=512M
+    command: start-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

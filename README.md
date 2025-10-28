@@ -29,3 +29,10 @@ It is appreciated, though not required, if a Dockerfile is included.
 Just create a fork from the current repo and send it to us!
 
 Good luck, potential colleague!
+
+
+DOCKER
+
+docker compose up --build
+docker build -t preferred-asets-api .
+docker run -p 8080:8080 preferred-asets-api
