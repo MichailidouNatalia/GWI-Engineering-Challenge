@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   # Preferred Assets API
   api:
@@ -11,9 +13,9 @@ services:
     environment:
       - SERVER_PORT=8081
       - KEYCLOAK_URL=http://keycloak:8080
-      - KEYCLOAK_REALM=master
-      - KEYCLOAK_CLIENT_ID=your-client-id
-      - KEYCLOAK_CLIENT_SECRET=your-client-secret
+      - KEYCLOAK_REALM=preferred-assets-realm
+      - KEYCLOAK_CLIENT_ID=preferred-assets-api
+      - KEYCLOAK_CLIENT_SECRET=AIz24JAXB4uQNsQ8uoANOFVobtFVvzlu
       - LOG_LEVEL=debug
     depends_on:
       - keycloak
@@ -23,18 +25,25 @@ services:
 
   # Keycloak for authentication
   keycloak:
-    image: quay.io/keycloak/keycloak:25.0.6
+    build:
+      context: .
+      dockerfile: Dockerfile-keycloak
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
       - KC_HEALTH_ENABLED=true
     ports:
       - "8090:8080"
+    volumes:
+      - ~./untitled folder/GWI-Engineering-Challenge/preferred_assets_api/cmd/api/config/keycloak-realm-import.json:/opt/keycloak/data/import/realm.json
     tmpfs:
       - /tmp:size=512M
-    command: start-dev
+    command: start-dev --features=scripts --import-realm
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
       interval: 10s
       timeout: 5s
       retries: 10
+
+volumes:
+  keycloak_dev_data:

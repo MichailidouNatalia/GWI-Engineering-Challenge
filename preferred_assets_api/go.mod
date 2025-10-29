@@ -13,7 +13,13 @@ require (
 )
 
 require (
+	github.com/go-jose/go-jose/v4 v4.1.3 // indirect
+	golang.org/x/oauth2 v0.28.0 // indirect
+)
+
+require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/coreos/go-oidc/v3 v3.16.0
 	github.com/gabriel-vasile/mimetype v1.4.10 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
@@ -21,7 +27,7 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.2
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect

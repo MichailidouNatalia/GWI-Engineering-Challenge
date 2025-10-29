@@ -6,12 +6,12 @@ import (
 
 	_ "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/docs"
 
+	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/cmd/api/config"
 	httpTransport "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/http/handlers"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/http/middleware"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/repositories/inmemory"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/application/dto"
 	application "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/application/services"
-	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/config"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/user"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/ports"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/pkg/auth"
@@ -30,7 +30,7 @@ func New() *App {
 	cfg := config.Load()
 
 	// Initialize Keycloak client
-	keycloakClient := auth.NewKeycloakClient(&cfg.Keycloak)
+	keycloakClient, _ := auth.NewKeycloakClient(&cfg.Keycloak)
 	userCache := cache.InitLRUCacheWithEvict[string, *user.User](3)
 	var userRepo ports.UserRepository = inmemory.NewUserRepository(userCache)
 	userService := application.NewUserService(userRepo)
@@ -56,15 +56,15 @@ func (application *App) Run() error {
 		// Authenticate all API routes
 		apiRouter.Use(middleware.AuthMiddleware(application.Keycloak))
 
-		apiRouter.With(middleware.RequireAnyRole("admin")).
+		apiRouter.With(middleware.RequireAnyRole("Administrators")).
 			Get("/users", application.UserHandler.List)
-		apiRouter.With(middleware.RequireAnyRole("admin")).
+		apiRouter.With(middleware.RequireAnyRole("Administrators")).
 			Get("/users/{id}", application.UserHandler.Get)
-		apiRouter.With(middleware.RequireAnyRole("admin")).With(middleware.ValidateBody[dto.CreateUserRequest]()).
+		apiRouter.With(middleware.RequireAnyRole("Administrators")).With(middleware.ValidateBody[dto.CreateUserRequest]()).
 			Post("/users", application.UserHandler.Create)
-		apiRouter.With(middleware.RequireAnyRole("admin")).
+		apiRouter.With(middleware.RequireAnyRole("Administrators")).
 			Put("/users/{id}", application.UserHandler.Update)
-		apiRouter.With(middleware.RequireAnyRole("admin")).
+		apiRouter.With(middleware.RequireAnyRole("Administrators")).
 			Delete("/users/{id}", application.UserHandler.Delete)
 	})
 
