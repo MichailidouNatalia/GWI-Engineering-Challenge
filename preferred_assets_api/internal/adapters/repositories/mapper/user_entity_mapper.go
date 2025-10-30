@@ -5,7 +5,7 @@ import (
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain"
 )
 
-// ToDomain converts entity to domain model
+// UserEntityToDomain converts entity to domain model
 func UserEntityToDomain(e entities.UserEntity) *domain.User {
 	return &domain.User{
 		Id:        e.Id,
@@ -17,7 +17,7 @@ func UserEntityToDomain(e entities.UserEntity) *domain.User {
 	}
 }
 
-// FromDomain converts domain model to entity
+// UserEntityFromDomain converts domain model to entity
 func UserEntityFromDomain(user domain.User) entities.UserEntity {
 	return entities.UserEntity{
 		Id:        user.Id,
@@ -29,6 +29,7 @@ func UserEntityFromDomain(user domain.User) entities.UserEntity {
 	}
 }
 
+// UserEntintyFromDomainList converts slice domain models to slice entities
 func UserEntintyFromDomainList(users []domain.User) []entities.UserEntity {
 	ent := make([]entities.UserEntity, len(users))
 	for i, user := range users {
@@ -37,6 +38,7 @@ func UserEntintyFromDomainList(users []domain.User) []entities.UserEntity {
 	return ent
 }
 
+// UserEntintyToDomainList converts slice entities to slice domain models
 func UserEntintyToDomainList(users []entities.UserEntity) []domain.User {
 	ent := make([]domain.User, len(users))
 	for i, user := range users {

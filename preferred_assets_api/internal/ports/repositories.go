@@ -6,12 +6,22 @@ import (
 )
 
 type UserRepository interface {
-	GetByID(id string) (*entities.UserEntity, error)
+	GetByID(id string) (entities.UserEntity, error)
 	Save(user entities.UserEntity) error
 	GetAll() ([]entities.UserEntity, error)
 	Delete(id string) error
 	Update(user entities.UserEntity) error
 	GetFavouritesByID(id string) ([]entities.FavouriteEntity, error)
+}
+
+type AssetRepository interface {
+	Save(asset entities.AssetEntity) error
+	GetByID(id string) (entities.AssetEntity, error)
+	GetAll() ([]entities.AssetEntity, error)
+	GetByType(assetType int) ([]entities.AssetEntity, error)
+	Update(asset entities.AssetEntity) error
+	Delete(id string) error
+	Exists(id string) (bool, error)
 }
 
 type FavouriteRepository interface {

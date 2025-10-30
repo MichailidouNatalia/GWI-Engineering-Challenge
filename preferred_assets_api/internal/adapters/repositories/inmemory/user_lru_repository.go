@@ -31,14 +31,14 @@ func (r *LRUUserRepositoryImpl) Save(u entities.UserEntity) error {
 	return nil
 }
 
-func (r *LRUUserRepositoryImpl) GetByID(id string) (*entities.UserEntity, error) {
+func (r *LRUUserRepositoryImpl) GetByID(id string) (entities.UserEntity, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	val, ok := r.cache.Get(id)
 	if !ok {
-		return &entities.UserEntity{}, errors.New("user not found")
+		return entities.UserEntity{}, errors.New("user not found")
 	}
-	return val, nil
+	return *val, nil
 }
 
 func (r *LRUUserRepositoryImpl) GetAll() ([]entities.UserEntity, error) {

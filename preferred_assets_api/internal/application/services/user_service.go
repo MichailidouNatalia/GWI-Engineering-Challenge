@@ -21,7 +21,7 @@ func NewUserService(usrRepo ports.UserRepository) *UserServiceImpl {
 
 func (usrService UserServiceImpl) GetUserByID(id string) (*domain.User, error) {
 	user, err := usrService.repo.GetByID(id)
-	return mapper.UserEntityToDomain(*user), err
+	return mapper.UserEntityToDomain(user), err
 }
 
 func (usrService UserServiceImpl) GetAllUsers() ([]domain.User, error) {

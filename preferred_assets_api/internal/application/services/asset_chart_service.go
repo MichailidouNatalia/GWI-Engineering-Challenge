@@ -15,6 +15,7 @@ func NewChartService(r ports.ChartRepository) *ChartService {
 
 func (s *ChartService) CreateChart(c domain.Chart) error {
 	// Domain rules could go here
+
 	return s.repo.Save(c)
 }
 

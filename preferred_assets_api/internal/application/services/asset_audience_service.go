@@ -14,7 +14,7 @@ func NewAudienceService(r ports.AudienceRepository) *AudienceService {
 }
 
 func (s *AudienceService) CreateAudience(c domain.Audience) error {
-	// Domain rules could go here
+
 	return s.repo.Save(c)
 }
 

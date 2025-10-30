@@ -1,10 +1,20 @@
 package domain
 
 type Audience struct {
-	Asset
+	AssetBase
 	Gender          string
 	BirthCountry    string
 	AgeGroup        string
 	HoursSocial     int
 	PurchasesLastMo int
+}
+
+var _ Asset = (*Audience)(nil)
+
+// Domain validation
+func (a *Audience) Validate() error {
+	if err := a.AssetBase.Validate(); err != nil {
+		return err
+	}
+	return nil
 }
