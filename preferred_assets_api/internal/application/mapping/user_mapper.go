@@ -1,27 +1,22 @@
 package mapping
 
 import (
-	"time"
-
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/application/dto"
-	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/user"
+	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain"
 	"github.com/google/uuid"
 )
 
-func ToDomain(req dto.CreateUserRequest) (user.User, error) {
+func UserReqToDomain(req dto.CreateUserRequest) (domain.User, error) {
 
-	return user.User{
-		ID:        uuid.NewString(),
-		Name:      req.Name,
-		Email:     req.Email,
-		Password:  req.Password,
-		CreatedAt: time.Now(),
-		UpdateAt:  time.Now(),
+	return domain.User{
+		Id:       uuid.NewString(),
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
 	}, nil
 }
 
-func UpdateToDomain(existingUser *user.User, req dto.UpdateUserRequest) *user.User {
-	// Apply updates to existing domain entity
+func UpdateReqToDomain(existingUser *domain.User, req dto.UpdateUserRequest) *domain.User {
 	if req.Email != "" {
 		existingUser.Email = req.Email
 	}
@@ -34,10 +29,18 @@ func UpdateToDomain(existingUser *user.User, req dto.UpdateUserRequest) *user.Us
 	return existingUser
 }
 
-func ToResponse(user user.User) dto.UserResponse {
+func DomainToUserRes(user domain.User) dto.UserResponse {
 	return dto.UserResponse{
-		ID:    user.ID,
+		ID:    user.Id,
 		Name:  user.Name,
 		Email: user.Email,
 	}
+}
+
+func UserReqToResponseList(users []domain.User) []dto.UserResponse {
+	responses := make([]dto.UserResponse, len(users))
+	for i, user := range users {
+		responses[i] = DomainToUserRes(user)
+	}
+	return responses
 }

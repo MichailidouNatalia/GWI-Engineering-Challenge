@@ -5,8 +5,8 @@
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
-  "accessTokenLifespan": 300,
-  "accessTokenLifespanForImplicitFlow": 900,
+  "accessTokenLifespan": 1800,
+  "accessTokenLifespanForImplicitFlow": 3600,
   "ssoSessionIdleTimeout": 1800,
   "ssoSessionMaxLifespan": 36000,
   "ssoSessionIdleTimeoutRememberMe": 0,
@@ -26,8 +26,8 @@
   "oauth2DeviceCodeLifespan": 600,
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
-  "sslRequired": "external",
-  "registrationAllowed": false,
+  "sslRequired": "none",
+  "registrationAllowed": true,
   "registrationEmailAsUsername": false,
   "rememberMe": false,
   "verifyEmail": false,
@@ -528,7 +528,8 @@
       "totp": false,
       "requiredActions": [],
       "realmRoles": [
-        "Administrators"
+        "Administrators",
+        "Users"
       ],
       "notBefore": 0,
       "groups": []
@@ -603,7 +604,8 @@
       "protocol": "openid-connect",
       "attributes": {
         "realm_client": "false",
-        "post.logout.redirect.uris": "+"
+        "post.logout.redirect.uris": "+",
+        "sslRequired": "none"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -651,7 +653,8 @@
       "attributes": {
         "realm_client": "false",
         "post.logout.redirect.uris": "+",
-        "pkce.code.challenge.method": "S256"
+        "pkce.code.challenge.method": "S256",
+        "sslRequired": "none"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -704,7 +707,8 @@
       "protocol": "openid-connect",
       "attributes": {
         "realm_client": "false",
-        "client.use.lightweight.access.token.enabled": "true"
+        "client.use.lightweight.access.token.enabled": "true",
+        "sslRequired": "none"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
@@ -746,7 +750,8 @@
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
-        "realm_client": "true"
+        "realm_client": "true",
+        "sslRequired": "none"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -791,7 +796,7 @@
       "consentRequired": false,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": true,
       "authorizationServicesEnabled": true,
       "publicClient": false,
@@ -807,7 +812,8 @@
         "oauth2.device.authorization.grant.enabled": "false",
         "display.on.consent.screen": "false",
         "backchannel.logout.revoke.offline.tokens": "false",
-        "dpop.bound.access.tokens": "false"
+        "dpop.bound.access.tokens": "false",
+        "sslRequired": "none"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
@@ -868,7 +874,8 @@
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
-        "realm_client": "true"
+        "realm_client": "true",
+        "sslRequired": "none"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -919,7 +926,8 @@
         "realm_client": "false",
         "client.use.lightweight.access.token.enabled": "true",
         "post.logout.redirect.uris": "+",
-        "pkce.code.challenge.method": "S256"
+        "pkce.code.challenge.method": "S256",
+        "sslRequired": "none"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,

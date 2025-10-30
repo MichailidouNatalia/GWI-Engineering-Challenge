@@ -1,12 +1,12 @@
-package user
+package entities
 
 import "time"
 
-type User struct {
-	ID        string
+type UserEntity struct {
+	Id        string
 	Name      string
 	Email     string
 	Password  string // hashed
 	CreatedAt time.Time
-	UpdateAt  time.Time
+	UpdatedAt time.Time
 }

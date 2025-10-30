@@ -1,7 +1,7 @@
 package application
 
 import (
-	chart "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/asset_chart"
+	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/ports"
 )
 
@@ -13,11 +13,11 @@ func NewChartService(r ports.ChartRepository) *ChartService {
 	return &ChartService{repo: r}
 }
 
-func (s *ChartService) CreateChart(c chart.Chart) error {
+func (s *ChartService) CreateChart(c domain.Chart) error {
 	// Domain rules could go here
 	return s.repo.Save(c)
 }
 
-func (s *ChartService) GetChart(id string) (chart.Chart, error) {
+func (s *ChartService) GetChart(id string) (domain.Chart, error) {
 	return s.repo.GetByID(id)
 }

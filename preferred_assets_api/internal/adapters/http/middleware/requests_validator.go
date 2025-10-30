@@ -10,7 +10,7 @@ import (
 
 type contextKey string
 
-const validatedBodyKey contextKey = "validatedBody"
+const validatedBodyKey cxtKey = "validatedBody"
 
 var validate = validator.New()
 

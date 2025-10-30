@@ -43,7 +43,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usr, err := mapping.ToDomain(req)
+	usr, err := mapping.UserReqToDomain(req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -78,7 +78,8 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(u); err != nil {
+	usr := mapping.DomainToUserRes(*u)
+	if err := json.NewEncoder(w).Encode(usr); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -96,7 +97,8 @@ func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(users); err != nil {
+	usersResponse := mapping.UserReqToResponseList(users)
+	if err := json.NewEncoder(w).Encode(usersResponse); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -145,7 +147,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedUser := mapping.UpdateToDomain(existingUser, req)
+	updatedUser := mapping.UpdateReqToDomain(existingUser, req)
 	if err := h.service.UpdateUser(*updatedUser); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -154,5 +156,29 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(map[string]string{"status": "updated"}); err != nil {
 		http.Error(w, "Failed JSON serialization", http.StatusInternalServerError)
+	}
+}
+
+// GetFavourites implements ports.UserHandler.
+func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		http.Error(w, "missing user id", http.StatusBadRequest)
+		return
+	}
+
+	u, err := h.service.GetFavouritesByUser(id)
+	if err != nil {
+		http.Error(w, "favourites not found", http.StatusNotFound)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(u); err != nil {
+		log.Fatal(err)
 	}
 }

@@ -3,16 +3,17 @@ package server
 import (
 	"log"
 	"net/http"
+	"time"
 
 	_ "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/docs"
 
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/cmd/api/config"
 	httpTransport "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/http/handlers"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/http/middleware"
+	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/repositories/entities"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/repositories/inmemory"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/application/dto"
 	application "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/application/services"
-	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/user"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/ports"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/pkg/auth"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/pkg/cache"
@@ -21,9 +22,10 @@ import (
 )
 
 type App struct {
-	UserHandler *httpTransport.UserHandler
-	Keycloak    *auth.KeycloakClient
-	Config      *config.Config
+	UserHandler      *httpTransport.UserHandler
+	FavouriteHandler *httpTransport.FavouriteHandler
+	Keycloak         *auth.KeycloakClient
+	Config           *config.Config
 }
 
 func New() *App {
@@ -31,15 +33,25 @@ func New() *App {
 
 	// Initialize Keycloak client
 	keycloakClient, _ := auth.NewKeycloakClient(&cfg.Keycloak)
-	userCache := cache.InitLRUCacheWithEvict[string, *user.User](3)
+
+	//Initialization for User resources
+	userCache := cache.InitLRUCacheWithEvict[string, *entities.UserEntity](3)
 	var userRepo ports.UserRepository = inmemory.NewUserRepository(userCache)
 	userService := application.NewUserService(userRepo)
 	userHandler := httpTransport.NewUserHandler(*userService)
 
+	//Initialization for Favourite resources
+	userFavouritesCache := cache.InitLRUCacheWithEvict[string, map[string]time.Time](3)
+	favouriteExistsCache := cache.InitLRUCacheWithEvict[string, bool](9)
+	var favouriteRepo ports.FavouriteRepository = inmemory.NewFavouriteRepository(userFavouritesCache, favouriteExistsCache)
+	favouriteService := application.NewFavouriteService(favouriteRepo)
+	favouriteHandler := httpTransport.NewFavouriteHandler(*favouriteService)
+
 	return &App{
-		UserHandler: userHandler,
-		Keycloak:    keycloakClient,
-		Config:      cfg,
+		UserHandler:      userHandler,
+		FavouriteHandler: favouriteHandler,
+		Keycloak:         keycloakClient,
+		Config:           cfg,
 	}
 }
 
@@ -56,6 +68,7 @@ func (application *App) Run() error {
 		// Authenticate all API routes
 		apiRouter.Use(middleware.AuthMiddleware(application.Keycloak))
 
+		//Group Users
 		apiRouter.With(middleware.RequireAnyRole("Administrators")).
 			Get("/users", application.UserHandler.List)
 		apiRouter.With(middleware.RequireAnyRole("Administrators")).
@@ -66,6 +79,14 @@ func (application *App) Run() error {
 			Put("/users/{id}", application.UserHandler.Update)
 		apiRouter.With(middleware.RequireAnyRole("Administrators")).
 			Delete("/users/{id}", application.UserHandler.Delete)
+		apiRouter.With(middleware.RequireAnyRole("Users")).
+			Get("/users/{id}/favourites", application.UserHandler.GetFavourites)
+
+		//Group Favourites
+		apiRouter.With(middleware.RequireAnyRole("Users")).With(middleware.ValidateBody[dto.FavouriteRequest]()).
+			Post("/favourites", application.FavouriteHandler.Create)
+		apiRouter.With(middleware.RequireAnyRole("Users")).
+			Post("/favourites/{userId}/assets/{assetId}", application.FavouriteHandler.Delete)
 	})
 
 	router.Get("/swagger/*", httpSwagger.WrapHandler)

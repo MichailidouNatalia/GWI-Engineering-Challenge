@@ -1,44 +1,46 @@
 package ports
 
 import (
-	audience "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/asset_audience"
-	chart "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/asset_chart"
-	insight "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/asset_insight"
-	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/favourite"
-	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/user"
+	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/repositories/entities"
+	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain"
 )
 
 type UserRepository interface {
-	GetByID(id string) (*user.User, error)
-	Save(user user.User) error
-	GetAll() ([]user.User, error)
+	GetByID(id string) (*entities.UserEntity, error)
+	Save(user entities.UserEntity) error
+	GetAll() ([]entities.UserEntity, error)
 	Delete(id string) error
-	Update(user user.User) error
+	Update(user entities.UserEntity) error
+	GetFavouritesByID(id string) ([]entities.FavouriteEntity, error)
 }
 
 type FavouriteRepository interface {
-	Add(f favourite.Favourite) error
-	Remove(userID, assetID string) error
-	GetByUser(userID string) ([]favourite.Favourite, error)
+	Add(f entities.FavouriteEntity) error
+	Delete(userID, assetID string) error
+	GetByUserID(userID string) ([]string, error)
+	Exists(userID, assetID string) (bool, error)
 }
 
 type AudienceRepository interface {
-	Save(audience audience.Audience) error
-	GetByID(id string) (audience.Audience, error)
-	GetAll() ([]audience.Audience, error)
+	Save(audience domain.Audience) error
+	GetByID(id string) (domain.Audience, error)
+	GetAll() ([]domain.Audience, error)
 	Delete(id string) error
+	Update(audience domain.Audience) error
 }
 
 type ChartRepository interface {
-	Save(chart chart.Chart) error
-	GetByID(id string) (chart.Chart, error)
-	GetAll() ([]chart.Chart, error)
+	Save(chart domain.Chart) error
+	GetByID(id string) (domain.Chart, error)
+	GetAll() ([]domain.Chart, error)
 	Delete(id string) error
+	Update(chart domain.Chart) error
 }
 
 type InsightRepository interface {
-	Save(insight insight.Insight) error
-	GetByID(id string) (insight.Insight, error)
-	GetAll() ([]insight.Insight, error)
+	Save(insight domain.Insight) error
+	GetByID(id string) (domain.Insight, error)
+	GetAll() ([]domain.Insight, error)
 	Delete(id string) error
+	Update(insight domain.Insight)
 }

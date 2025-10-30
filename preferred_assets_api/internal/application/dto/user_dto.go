@@ -17,3 +17,9 @@ type UserResponse struct {
 	Email string `json:"email"`
 	Name  string `json:"name"`
 }
+
+type UserFavouritesResponse struct {
+	AssetType   string `json:"assetType"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}

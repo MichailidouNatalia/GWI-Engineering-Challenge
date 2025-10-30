@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   # Preferred Assets API
   api:
@@ -12,7 +10,7 @@ services:
       - "8081:8081"
     environment:
       - SERVER_PORT=8081
-      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_URL=http://keycloak:8090
       - KEYCLOAK_REALM=preferred-assets-realm
       - KEYCLOAK_CLIENT_ID=preferred-assets-api
       - KEYCLOAK_CLIENT_SECRET=AIz24JAXB4uQNsQ8uoANOFVobtFVvzlu
@@ -38,9 +36,9 @@ services:
       - ~./untitled folder/GWI-Engineering-Challenge/preferred_assets_api/cmd/api/config/keycloak-realm-import.json:/opt/keycloak/data/import/realm.json
     tmpfs:
       - /tmp:size=512M
-    command: start-dev --features=scripts --import-realm
+    command: start-dev --features=scripts --import-realm --http-enabled=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:8443/health/ready"]
       interval: 10s
       timeout: 5s
       retries: 10

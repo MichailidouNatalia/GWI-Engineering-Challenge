@@ -8,9 +8,12 @@ import (
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/pkg/auth"
 )
 
+// Add the missing cxtKey type
+type cxtKey string
+
 const (
-	UserClaimsKey contextKey = "user_claims"
-	UserRolesKey  contextKey = "user_roles"
+	UserClaimsKey cxtKey = "user_claims"
+	UserRolesKey  cxtKey = "user_roles"
 )
 
 // AuthMiddleware verifies JWT tokens

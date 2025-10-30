@@ -51,7 +51,9 @@ func NewKeycloakClient(cfg *config.KeycloakConfig) (*KeycloakClient, error) {
 
 func (kc *KeycloakClient) VerifyToken(tokenString string) (*CustomClaims, error) {
 	ctx := context.Background()
-
+	if kc.verifier == nil {
+		return nil, fmt.Errorf("verifier is not initialized - Keycloak client was not properly created")
+	}
 	idToken, err := kc.verifier.Verify(ctx, tokenString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to verify token: %v", err)

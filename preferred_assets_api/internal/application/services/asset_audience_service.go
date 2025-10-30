@@ -1,7 +1,7 @@
 package application
 
 import (
-	assetaudience "github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain/asset_audience"
+	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain"
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/ports"
 )
 
@@ -13,11 +13,11 @@ func NewAudienceService(r ports.AudienceRepository) *AudienceService {
 	return &AudienceService{repo: r}
 }
 
-func (s *AudienceService) CreateAudience(c assetaudience.Audience) error {
+func (s *AudienceService) CreateAudience(c domain.Audience) error {
 	// Domain rules could go here
 	return s.repo.Save(c)
 }
 
-func (s *AudienceService) GetAudience(id string) (assetaudience.Audience, error) {
+func (s *AudienceService) GetAudience(id string) (domain.Audience, error) {
 	return s.repo.GetByID(id)
 }
