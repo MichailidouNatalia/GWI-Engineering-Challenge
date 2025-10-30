@@ -14,7 +14,7 @@ func InsightEntityFromDomain(i domain.Insight) *entities.InsightEntity {
 }
 
 // InsightEntityToDomain converts entity to domain model
-func InsightEntityToDomain(i entities.InsightEntity) *domain.Insight {
+func InsightEntityToDomain(i *entities.InsightEntity) *domain.Insight {
 	return &domain.Insight{
 		AssetBase: AssetBaseEntityToDomain(i.AssetBaseEntity),
 		Text:      i.Text,

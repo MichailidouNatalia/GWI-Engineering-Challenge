@@ -6,7 +6,7 @@ import (
 )
 
 // AudienceEntityToDomain converts entity to domain model
-func AudienceEntityToDomain(e entities.AudienceEntity) *domain.Audience {
+func AudienceEntityToDomain(e *entities.AudienceEntity) *domain.Audience {
 	return &domain.Audience{
 		AssetBase:       AssetBaseEntityToDomain(e.AssetBaseEntity),
 		Gender:          e.Gender,
@@ -18,7 +18,7 @@ func AudienceEntityToDomain(e entities.AudienceEntity) *domain.Audience {
 }
 
 // AudienceEntityFromDomain converts domain model to entity
-func AudienceEntityFromDomain(a domain.Audience) entities.AudienceEntity {
+func AudienceEntityFromDomain(a *domain.Audience) entities.AudienceEntity {
 	return entities.AudienceEntity{
 		AssetBaseEntity: *AssetBaseEntityFromDomain(a.AssetBase),
 		Gender:          a.Gender,

@@ -21,20 +21,16 @@ type LRUAssetRepositoryImpl struct {
 	mu    sync.RWMutex
 }
 
+func NewAssetRepository(cache *lru.Cache[string, entities.AssetEntity]) *LRUAssetRepositoryImpl {
+	return &LRUAssetRepositoryImpl{cache: cache}
+}
+
 func (r *LRUAssetRepositoryImpl) Exists(id string) (bool, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
 	exists := r.cache.Contains(id)
 	return exists, nil
-}
-
-func NewAssetCache(size int) (*LRUAssetRepositoryImpl, error) {
-	cache, err := lru.New[string, entities.AssetEntity](size)
-	if err != nil {
-		return nil, err
-	}
-	return &LRUAssetRepositoryImpl{cache: cache}, nil
 }
 
 func (r *LRUAssetRepositoryImpl) Save(asset entities.AssetEntity) error {
@@ -60,6 +56,20 @@ func (r *LRUAssetRepositoryImpl) GetByID(id string) (entities.AssetEntity, error
 	return val, nil
 }
 
+func (r *LRUAssetRepositoryImpl) GetByIDs(ids []string) ([]entities.AssetEntity, error) {
+	assets := make([]entities.AssetEntity, 0, len(ids))
+
+	for _, id := range ids {
+		asset, err := r.GetByID(id)
+		if err != nil {
+			continue
+		}
+		assets = append(assets, asset)
+	}
+
+	return assets, nil
+}
+
 func (r *LRUAssetRepositoryImpl) GetAll() ([]entities.AssetEntity, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -73,7 +83,7 @@ func (r *LRUAssetRepositoryImpl) GetAll() ([]entities.AssetEntity, error) {
 	return assets, nil
 }
 
-func (r *LRUAssetRepositoryImpl) GetByType(typeId int) ([]entities.AssetEntity, error) {
+func (r *LRUAssetRepositoryImpl) GetByType(typeId entities.AssetType) ([]entities.AssetEntity, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 

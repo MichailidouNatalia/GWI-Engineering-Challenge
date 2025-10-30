@@ -17,8 +17,9 @@ type UserRepository interface {
 type AssetRepository interface {
 	Save(asset entities.AssetEntity) error
 	GetByID(id string) (entities.AssetEntity, error)
+	GetByIDs(ids []string) ([]entities.AssetEntity, error)
 	GetAll() ([]entities.AssetEntity, error)
-	GetByType(assetType int) ([]entities.AssetEntity, error)
+	GetByType(assetType entities.AssetType) ([]entities.AssetEntity, error)
 	Update(asset entities.AssetEntity) error
 	Delete(id string) error
 	Exists(id string) (bool, error)

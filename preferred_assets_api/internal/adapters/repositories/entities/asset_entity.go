@@ -7,7 +7,7 @@ import (
 
 type AssetBaseEntity struct {
 	ID          string    `db:"id"`
-	Type        int       `db:"type"`
+	Type        AssetType `db:"type"`
 	Title       string    `db:"title"`
 	Description string    `db:"description"`
 	CreatedAt   time.Time `db:"created_at"`
@@ -16,7 +16,7 @@ type AssetBaseEntity struct {
 
 type AssetEntity interface {
 	GetID() string
-	GetType() int
+	GetType() AssetType
 	GetTitle() string
 	GetDescription() string
 	GetCreatedAt() time.Time
@@ -25,7 +25,7 @@ type AssetEntity interface {
 }
 
 func (a AssetBaseEntity) GetID() string           { return a.ID }
-func (a AssetBaseEntity) GetType() int            { return a.Type }
+func (a AssetBaseEntity) GetType() AssetType      { return AssetType(a.Type) }
 func (a AssetBaseEntity) GetTitle() string        { return a.Title }
 func (a AssetBaseEntity) GetDescription() string  { return a.Description }
 func (a AssetBaseEntity) GetCreatedAt() time.Time { return a.CreatedAt }

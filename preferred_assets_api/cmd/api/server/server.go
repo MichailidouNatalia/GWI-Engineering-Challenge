@@ -36,8 +36,10 @@ func New() *App {
 
 	//Initialization for User resources
 	userCache := cache.InitLRUCacheWithEvict[string, *entities.UserEntity](3)
+	assetCache := cache.InitLRUCacheWithEvict[string, entities.AssetEntity](50)
 	var userRepo ports.UserRepository = inmemory.NewUserRepository(userCache)
-	userService := application.NewUserService(userRepo)
+	var assetRepo ports.AssetRepository = inmemory.NewAssetRepository(assetCache)
+	userService := application.NewUserService(userRepo, assetRepo)
 	userHandler := httpTransport.NewUserHandler(*userService)
 
 	//Initialization for Favourite resources
