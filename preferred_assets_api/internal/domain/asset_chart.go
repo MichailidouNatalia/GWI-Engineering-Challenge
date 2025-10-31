@@ -10,10 +10,14 @@ type Chart struct {
 
 var _ Asset = (*Chart)(nil)
 
-// Domain validation
+// Validate performs domain validation for the Chart type.
 func (c *Chart) Validate() error {
 	if err := c.AssetBase.Validate(); err != nil {
 		return err
+	}
+
+	if len(c.Data) == 0 {
+		return fmt.Errorf("data cannot be empty")
 	}
 
 	if len(c.AxesTitles) > 2 {

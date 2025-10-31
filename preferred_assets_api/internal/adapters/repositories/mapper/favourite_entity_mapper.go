@@ -5,16 +5,19 @@ import (
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/domain"
 )
 
-// ToDomain converts entity to domain model
-func FavouriteEntityToDomain(e entities.FavouriteEntity) domain.Favourite {
-	return domain.Favourite{
+// FavouriteEntityToDomain converts entity to domain model
+func FavouriteEntityToDomain(e *entities.FavouriteEntity) *domain.Favourite {
+	if e == nil {
+		return nil
+	}
+	return &domain.Favourite{
 		UserID:    e.UserId,
 		AssetID:   e.AssetId,
 		CreatedAt: e.CreatedAt,
 	}
 }
 
-// FromDomain converts domain model to entity
+// FavouriteEntityFromDomain converts domain model to entity
 func FavouriteEntityFromDomain(favourite domain.Favourite) entities.FavouriteEntity {
 	return entities.FavouriteEntity{
 		UserId:    favourite.UserID,
@@ -23,10 +26,15 @@ func FavouriteEntityFromDomain(favourite domain.Favourite) entities.FavouriteEnt
 	}
 }
 
-func FavouriteEntityToDomainList(favourites []entities.FavouriteEntity) []domain.Favourite {
-	ent := make([]domain.Favourite, len(favourites))
-	for i, favourite := range favourites {
-		ent[i] = FavouriteEntityToDomain(favourite)
+// SafeFavouriteEntityToDomainList converts a list of entity to a list of domain model, handling nil input
+func SafeFavouriteEntityToDomainList(favs []entities.FavouriteEntity) []domain.Favourite {
+	if favs == nil {
+		return []domain.Favourite{}
+	}
+
+	ent := make([]domain.Favourite, len(favs))
+	for i, f := range favs {
+		ent[i] = *FavouriteEntityToDomain(&f)
 	}
 	return ent
 }

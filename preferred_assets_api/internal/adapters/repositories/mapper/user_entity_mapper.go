@@ -6,7 +6,10 @@ import (
 )
 
 // UserEntityToDomain converts entity to domain model
-func UserEntityToDomain(e entities.UserEntity) *domain.User {
+func UserEntityToDomain(e *entities.UserEntity) *domain.User {
+	if e == nil {
+		return nil
+	}
 	return &domain.User{
 		Id:        e.Id,
 		Name:      e.Name,
@@ -41,8 +44,8 @@ func UserEntintyFromDomainList(users []domain.User) []entities.UserEntity {
 // UserEntintyToDomainList converts slice entities to slice domain models
 func UserEntintyToDomainList(users []entities.UserEntity) []domain.User {
 	ent := make([]domain.User, len(users))
-	for i, user := range users {
-		ent[i] = *UserEntityToDomain(user)
+	for i, usr := range users {
+		ent[i] = *UserEntityToDomain(&usr)
 	}
 	return ent
 }

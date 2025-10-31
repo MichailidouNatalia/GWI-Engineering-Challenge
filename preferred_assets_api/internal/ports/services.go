@@ -11,28 +11,9 @@ type UserService interface {
 	GetFavouritesByUser(id string) ([]domain.Favourite, error)
 }
 
-type AudienceService interface {
-	CreateAudience(audience domain.Audience) error
-	GetAudienceByID(id string) (*domain.Audience, error)
-	GetAllAudiences() ([]domain.Audience, error)
-	UpdateAudience(audience domain.Audience) error
-	DeleteAudience(id string) error
-}
-
-type ChartService interface {
-	CreateChart(chart domain.Chart) error
-	GetChartByID(id string) (*domain.Chart, error)
-	GetAllCharts() ([]domain.Chart, error)
-	UpdateChart(chart domain.Chart) error
-	DeleteChart(id string) error
-}
-
-type InsightService interface {
-	CreateInsight(insight domain.Insight) error
-	GetInsightByID(id string) (*domain.Insight, error)
-	GetAllInsights() ([]domain.Insight, error)
-	UpdateInsight(insight domain.Insight) error
-	DeleteInsight(id string) error
+type AssetService interface {
+	CreateAsset(asset domain.Asset) error
+	DeleteAsset(id string) error
 }
 
 type FavouriteService interface {

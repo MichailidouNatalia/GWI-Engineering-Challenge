@@ -8,15 +8,54 @@ import (
 )
 
 func AssetEntityToDomain(entity entities.AssetEntity) (domain.Asset, error) {
-	switch entity.GetType() {
-	case entities.AssetTypeAudience:
-		return AudienceEntityToDomain(entity.(*entities.AudienceEntity)), nil
-	case entities.AssetTypeChart:
-		return ChartEntityToDomain(entity.(*entities.ChartEntity)), nil
-	case entities.AssetTypeInsight:
-		return InsightEntityToDomain(entity.(*entities.InsightEntity)), nil
+	if entity == nil {
+		return nil, nil
+	}
+
+	switch e := entity.(type) {
+	case *entities.AudienceEntity:
+		if e == nil {
+			return nil, nil
+		}
+		return AudienceEntityToDomain(e), nil
+	case *entities.ChartEntity:
+		if e == nil {
+			return nil, nil
+		}
+		return ChartEntityToDomain(e), nil
+	case *entities.InsightEntity:
+		if e == nil {
+			return nil, nil
+		}
+		return InsightEntityToDomain(e), nil
 	default:
 		return nil, fmt.Errorf("unknown asset type: %v", entity.GetType())
+	}
+}
+
+func AssetEntityFromDomain(asset domain.Asset) (entities.AssetEntity, error) {
+	if asset == nil {
+		return nil, nil
+	}
+
+	switch a := asset.(type) {
+	case *domain.Audience:
+		if a == nil {
+			return nil, nil
+		}
+		return AudienceEntityFromDomain(a), nil
+	case *domain.Chart:
+		if a == nil {
+			return nil, nil
+		}
+		return ChartEntityFromDomain(a), nil
+	case *domain.Insight:
+		if a == nil {
+			return nil, nil
+		}
+		return InsightEntityFromDomain(a), nil
+	default:
+		return nil, fmt.Errorf("unknown asset type: %v", asset.GetType())
 	}
 }
 

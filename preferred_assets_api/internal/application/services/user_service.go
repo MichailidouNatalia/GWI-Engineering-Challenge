@@ -1,4 +1,4 @@
-package application
+package services
 
 import (
 	"fmt"
@@ -25,8 +25,11 @@ func NewUserService(usrRepo ports.UserRepository, assetRepo ports.AssetRepositor
 }
 
 func (usrService UserServiceImpl) GetUserByID(id string) (*domain.User, error) {
-	user, err := usrService.repo.GetByID(id)
-	return mapper.UserEntityToDomain(user), err
+	userEntity, err := usrService.repo.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return mapper.UserEntityToDomain(userEntity), nil
 }
 
 func (usrService UserServiceImpl) GetAllUsers() ([]domain.User, error) {
@@ -69,11 +72,14 @@ func (usrService UserServiceImpl) GetFavouritesByUser(id string) ([]domain.Favou
 	return enhancedFavs, err
 }
 
+// batchEnhanceFavourites Fetch all Assets based on AssetIds in Favourites slide
+// returns a slice of Favourites domain objects enhanced with the corresponding Asset domain objects
 func (usrService UserServiceImpl) batchEnhanceFavourites(favourites []domain.Favourite) ([]domain.Favourite, error) {
 	if len(favourites) == 0 {
 		return favourites, nil
 	}
 
+	// Collect all asset IDs from favourites
 	assetIDs := make([]string, 0, len(favourites))
 	for _, fav := range favourites {
 		assetIDs = append(assetIDs, fav.AssetID)
@@ -85,35 +91,38 @@ func (usrService UserServiceImpl) batchEnhanceFavourites(favourites []domain.Fav
 		return nil, fmt.Errorf("failed to fetch assets: %w", err)
 	}
 
-	// Create a map for quick lookup
-	assetMap := make(map[string]entities.AssetEntity)
+	// Build lookup map for existing assets
+	assetMap := make(map[string]entities.AssetEntity, len(assetsEntities))
 	for _, assetEntity := range assetsEntities {
 		assetMap[assetEntity.GetID()] = assetEntity
 	}
 
-	// Enhance favourites with assets
+	// Enhance favourites only for those with existing assets
 	enhancedFavs := make([]domain.Favourite, 0, len(favourites))
 	for _, fav := range favourites {
 		assetEntity, exists := assetMap[fav.AssetID]
 		if !exists {
-			log.Printf("Asset %s not found for favourite", fav.AssetID)
-			continue
+			log.Printf("[batchEnhanceFavourites] Asset %s not found — favourite %s will be removed", fav.AssetID, fav.UserID)
+			continue // skip missing asset favourites
 		}
 
-		// Map Asset Entities to Domain
-		asset, err := mapper.AssetEntityToDomain(assetEntity)
-		if err != nil {
-			log.Printf("Failed to map asset entity: %v", err)
-			continue
-		}
-		// Assign Asset domain objects to Favourite domain object
-		if err := fav.SetAsset(asset); err != nil {
-			log.Printf("Failed to set asset on favourite: %v", err)
-			continue
+		// Convert AssetEntity -> Domain
+		if len(enhancedFavs) != 0 {
+			asset, err := mapper.AssetEntityToDomain(assetEntity)
+			if err != nil {
+				log.Printf("[batchEnhanceFavourites] Failed to map asset %s: %v", fav.AssetID, err)
+				continue // skip if mapping fails
+			}
+
+			// Attach asset to favourite
+			if err := fav.SetAsset(asset); err != nil {
+				log.Printf("[batchEnhanceFavourites] Failed to set asset %s on favourite %s: %v", fav.AssetID, fav.UserID, err)
+				continue // skip invalid favourite
+			}
+
+			enhancedFavs = append(enhancedFavs, fav)
 		}
 
-		enhancedFavs = append(enhancedFavs, fav)
 	}
-
 	return enhancedFavs, nil
 }

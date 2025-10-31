@@ -159,7 +159,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GetFavourites implements ports.UserHandler.
+// GetFavourites implements ports.UserHandler
 func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -172,13 +172,14 @@ func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := h.service.GetFavouritesByUser(id)
+	favourites, err := h.service.GetFavouritesByUser(id)
 	if err != nil {
 		http.Error(w, "favourites not found", http.StatusNotFound)
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(u); err != nil {
+	response := mapping.FavouritesToResponse(favourites)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -68,22 +68,24 @@ func (c *LRUFavouriteRepositoryImpl) Delete(userID, assetID string) error {
 
 	return nil
 }
-
-func (c *LRUFavouriteRepositoryImpl) GetByUserID(userID string) ([]string, error) {
+func (c *LRUFavouriteRepositoryImpl) GetByUserID(userID string) ([]entities.FavouriteEntity, error) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
 	if userAssets, ok := c.userAssetsCache.Get(userID); ok {
-		// Return just the asset IDs (sorted by creation time if needed)
-		assets := make([]string, 0, len(userAssets))
-		for assetID := range userAssets {
-			assets = append(assets, assetID)
+		favourites := make([]entities.FavouriteEntity, 0, len(userAssets))
+		for assetID, createdAt := range userAssets {
+			favourites = append(favourites, entities.FavouriteEntity{
+				UserId:    userID,
+				AssetId:   assetID,
+				CreatedAt: createdAt,
+			})
 		}
-		return assets, nil
+		return favourites, nil
 	}
 
 	// Return empty slice if user has no favourites
-	return []string{}, nil
+	return []entities.FavouriteEntity{}, nil
 }
 
 func (c *LRUFavouriteRepositoryImpl) Exists(userID, assetID string) (bool, error) {

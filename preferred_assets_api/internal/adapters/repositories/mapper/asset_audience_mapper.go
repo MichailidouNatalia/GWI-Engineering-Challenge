@@ -6,20 +6,26 @@ import (
 )
 
 // AudienceEntityToDomain converts entity to domain model
-func AudienceEntityToDomain(e *entities.AudienceEntity) *domain.Audience {
+func AudienceEntityToDomain(a *entities.AudienceEntity) *domain.Audience {
+	if a == nil {
+		return nil
+	}
 	return &domain.Audience{
-		AssetBase:       AssetBaseEntityToDomain(e.AssetBaseEntity),
-		Gender:          e.Gender,
-		BirthCountry:    e.BirthCountry,
-		AgeGroup:        e.AgeGroup,
-		HoursSocial:     e.HoursSocial,
-		PurchasesLastMo: e.PurchasesLastMo,
+		AssetBase:       AssetBaseEntityToDomain(a.AssetBaseEntity),
+		Gender:          a.Gender,
+		BirthCountry:    a.BirthCountry,
+		AgeGroup:        a.AgeGroup,
+		HoursSocial:     a.HoursSocial,
+		PurchasesLastMo: a.PurchasesLastMo,
 	}
 }
 
 // AudienceEntityFromDomain converts domain model to entity
-func AudienceEntityFromDomain(a *domain.Audience) entities.AudienceEntity {
-	return entities.AudienceEntity{
+func AudienceEntityFromDomain(a *domain.Audience) *entities.AudienceEntity {
+	if a == nil {
+		return nil
+	}
+	return &entities.AudienceEntity{
 		AssetBaseEntity: *AssetBaseEntityFromDomain(a.AssetBase),
 		Gender:          a.Gender,
 		BirthCountry:    a.BirthCountry,

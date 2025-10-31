@@ -11,6 +11,10 @@ import (
 
 // ChartEntityToDomain converts entity to domain model
 func ChartEntityToDomain(e *entities.ChartEntity) *domain.Chart {
+	if e == nil {
+		return nil
+	}
+
 	return &domain.Chart{
 		AssetBase:  AssetBaseEntityToDomain(e.AssetBaseEntity),
 		AxesTitles: safeUnmarshalStringArray(e.AxesTitles, e.ID, "axes titles"),
@@ -19,23 +23,16 @@ func ChartEntityToDomain(e *entities.ChartEntity) *domain.Chart {
 }
 
 // ChartEntityFromDomain converts domain model to entity
-func ChartEntityFromDomain(c domain.Chart) (*entities.ChartEntity, error) {
-	// Serialize slices to JSON
-	axesJSON, err := json.Marshal(c.AxesTitles)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal axes titles: %w", err)
-	}
-
-	dataJSON, err := json.Marshal(c.Data)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal chart data: %w", err)
+func ChartEntityFromDomain(c *domain.Chart) *entities.ChartEntity {
+	if c == nil {
+		return nil
 	}
 
 	return &entities.ChartEntity{
 		AssetBaseEntity: *AssetBaseEntityFromDomain(c.AssetBase),
-		AxesTitles:      string(axesJSON),
-		Data:            string(dataJSON),
-	}, nil
+		AxesTitles:      safeMarshalToString(c.AxesTitles, "[]", fmt.Sprintf("axes titles for chart %s", c.GetID())),
+		Data:            safeMarshalToString(c.Data, "[]", fmt.Sprintf("chart data for chart %s", c.GetID())),
+	}
 }
 
 func safeUnmarshalStringArray(jsonStr, assetID, fieldName string) []string {
@@ -60,4 +57,23 @@ func safeUnmarshalFloatArray(jsonStr, assetID, fieldName string) [][]float64 {
 		return [][]float64{}
 	}
 	return result
+}
+
+func safeMarshalToString(value interface{}, fallback string, logPrefix string) string {
+	if value == nil {
+		return fallback
+	}
+
+	bytes, err := json.Marshal(value)
+	if err != nil {
+		log.Printf("WARNING: %s - failed to marshal: %v", logPrefix, err)
+		return fallback
+	}
+
+	// Ensure empty slices are marshaled as "[]"
+	if string(bytes) == "null" {
+		return fallback
+	}
+
+	return string(bytes)
 }

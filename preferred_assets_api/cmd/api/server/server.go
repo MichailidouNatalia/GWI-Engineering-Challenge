@@ -24,6 +24,7 @@ import (
 type App struct {
 	UserHandler      *httpTransport.UserHandler
 	FavouriteHandler *httpTransport.FavouriteHandler
+	AssetHandler     *httpTransport.AssetHandler
 	Keycloak         *auth.KeycloakClient
 	Config           *config.Config
 }
@@ -34,24 +35,30 @@ func New() *App {
 	// Initialize Keycloak client
 	keycloakClient, _ := auth.NewKeycloakClient(&cfg.Keycloak)
 
+	//Initialization for Favourite resources
+	favouritesCache := cache.InitLRUCacheWithEvict[string, map[string]time.Time](100)
+	favouriteExistsCache := cache.InitLRUCacheWithEvict[string, bool](100)
+	var favouriteRepo ports.FavouriteRepository = inmemory.NewFavouriteRepository(favouritesCache, favouriteExistsCache)
+	favouriteService := application.NewFavouriteService(favouriteRepo)
+	favouriteHandler := httpTransport.NewFavouriteHandler(*favouriteService)
+
 	//Initialization for User resources
-	userCache := cache.InitLRUCacheWithEvict[string, *entities.UserEntity](3)
+	userCache := cache.InitLRUCacheWithEvict[string, *entities.UserEntity](5)
 	assetCache := cache.InitLRUCacheWithEvict[string, entities.AssetEntity](50)
-	var userRepo ports.UserRepository = inmemory.NewUserRepository(userCache)
+	var userRepo ports.UserRepository = inmemory.NewUserRepository(userCache, favouriteRepo)
 	var assetRepo ports.AssetRepository = inmemory.NewAssetRepository(assetCache)
 	userService := application.NewUserService(userRepo, assetRepo)
 	userHandler := httpTransport.NewUserHandler(*userService)
 
-	//Initialization for Favourite resources
-	userFavouritesCache := cache.InitLRUCacheWithEvict[string, map[string]time.Time](3)
-	favouriteExistsCache := cache.InitLRUCacheWithEvict[string, bool](9)
-	var favouriteRepo ports.FavouriteRepository = inmemory.NewFavouriteRepository(userFavouritesCache, favouriteExistsCache)
-	favouriteService := application.NewFavouriteService(favouriteRepo)
-	favouriteHandler := httpTransport.NewFavouriteHandler(*favouriteService)
+	//Initialization for Asset resources
+	assetRepo = inmemory.NewAssetRepository(assetCache)
+	assetService := application.NewAssetService(assetRepo)
+	assetHandler := httpTransport.NewAssetHandler(assetService)
 
 	return &App{
 		UserHandler:      userHandler,
 		FavouriteHandler: favouriteHandler,
+		AssetHandler:     assetHandler,
 		Keycloak:         keycloakClient,
 		Config:           cfg,
 	}
@@ -88,7 +95,7 @@ func (application *App) Run() error {
 		apiRouter.With(middleware.RequireAnyRole("Users")).With(middleware.ValidateBody[dto.FavouriteRequest]()).
 			Post("/favourites", application.FavouriteHandler.Create)
 		apiRouter.With(middleware.RequireAnyRole("Users")).
-			Post("/favourites/{userId}/assets/{assetId}", application.FavouriteHandler.Delete)
+			Delete("/favourites/{userId}/assets/{assetId}", application.FavouriteHandler.Delete)
 	})
 
 	router.Get("/swagger/*", httpSwagger.WrapHandler)
