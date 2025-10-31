@@ -33,16 +33,20 @@ func (r *LRUAssetRepositoryImpl) Exists(id string) (bool, error) {
 	return exists, nil
 }
 
-func (r *LRUAssetRepositoryImpl) Save(asset entities.AssetEntity) error {
+func (r *LRUAssetRepositoryImpl) Save(asset entities.AssetEntity) (entities.AssetEntity, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
 	if err := asset.Validate(); err != nil {
-		return err
+		return entities.AssetBaseEntity{}, err
 	}
 
-	r.cache.Add(asset.GetID(), asset)
-	return nil
+	val, ok := r.cache.Get(asset.GetID())
+	if !ok {
+		return entities.AssetBaseEntity{}, ErrAssetNotFound
+	}
+
+	return val, nil
 }
 
 func (r *LRUAssetRepositoryImpl) GetByID(id string) (entities.AssetEntity, error) {

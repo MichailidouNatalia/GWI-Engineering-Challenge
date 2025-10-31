@@ -38,7 +38,4 @@ type AssetHandler interface {
 
 	// Delete handles HTTP DELETE /assets/{id} requests
 	Delete(w http.ResponseWriter, r *http.Request)
-
-	// List handles HTTP GET /users requests
-	List(w http.ResponseWriter, r *http.Request)
 }

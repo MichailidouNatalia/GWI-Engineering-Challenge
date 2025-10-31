@@ -20,15 +20,23 @@ func NewAssetService(assetRepo ports.AssetRepository) *AssetServiceImpl {
 }
 
 // CreateAsset implements ports.AssetService.
-func (assetService *AssetServiceImpl) CreateAsset(asset domain.Asset) error {
+func (assetService *AssetServiceImpl) CreateAsset(asset domain.Asset) (domain.Asset, error) {
 	asset.SetCreatedAt(time.Now().UTC())
 	assetEntity, err := mapper.AssetEntityFromDomain(asset)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return assetService.assetRepo.Save(assetEntity)
+	createdAsset, err := assetService.assetRepo.Save(assetEntity)
+	if err != nil {
+		return nil, err
+	}
 
+	createdAssetDomain, err := mapper.AssetEntityToDomain(createdAsset)
+	if err != nil {
+		return nil, err
+	}
+	return createdAssetDomain, nil
 }
 
 // DeleteAsset implements ports.AssetService.

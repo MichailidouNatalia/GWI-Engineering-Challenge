@@ -22,15 +22,17 @@ func NewUserHandler(s ports.UserService) *UserHandler {
 	return &UserHandler{service: s}
 }
 
-// @Summary      Create user
-// @Description  Creates a new user account
-// @Tags         Users
-// @Accept       json
-// @Produce      json
-// @Param        request body dto.CreateUserRequest true "User info"
-// @Success      201 {object} dto.UserResponse
-// @Failure      400 {object} map[string]string
-// @Router       /users [post]
+// Create creates a new user
+// swagger:operation POST /users users createUser
+//
+// Create User
+// ---
+// responses:
+//
+//	201: NoContentResponse
+//	400: ValidationErrorResponse
+//	405: MethodErrorResponse
+//	500: ServerErrorResponse
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -56,10 +58,19 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	//json.NewEncoder(w).Encode(created)
 }
 
-// Get handles GET /users/{id}
+// Get retrieves a user by ID
+// swagger:operation GET /users/{id} users getUser
+//
+// Get User
+// ---
+// responses:
+//
+//	200: UserResponse
+//	400: ValidationErrorResponse
+//	404: NotFoundResponse
+//	405: MethodErrorResponse
 func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -84,7 +95,16 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// List handles GET /users
+// List retrieves all users
+// swagger:operation GET /users users listUsers
+//
+// List Users
+// ---
+// responses:
+//
+//	200: UserListResponse
+//	405: MethodErrorResponse
+//	500: ServerErrorResponse
 func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -103,7 +123,17 @@ func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Get handles Delete /users/{id}
+// Delete removes a user by ID
+// swagger:operation DELETE /users/{id} users deleteUser
+//
+// Delete User
+// ---
+// responses:
+//
+//	200: NoContentResponse
+//	400: ValidationErrorResponse
+//	404: NotFoundResponse
+//	405: MethodErrorResponse
 func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -123,6 +153,18 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Update modifies a user by ID
+// swagger:operation PUT /users/{id} users updateUser
+//
+// Update User
+// ---
+// responses:
+//
+//	200: UpdateSuccessResponse
+//	400: ValidationErrorResponse
+//	404: NotFoundResponse
+//	405: MethodErrorResponse
+//	500: ServerErrorResponse
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut && r.Method != http.MethodPatch {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -159,7 +201,18 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GetFavourites implements ports.UserHandler
+// GetFavourites retrieves user favourites
+// swagger:operation GET /users/{id}/favourites users getUserFavourites
+//
+// Get User Favourites
+// ---
+// responses:
+//
+//	200: FavouriteListResponse
+//	400: ValidationErrorResponse
+//	404: NotFoundResponse
+//	405: MethodErrorResponse
+//	500: ServerErrorResponse
 func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -180,7 +233,6 @@ func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
 
 	response := mapping.FavouritesToResponse(favourites)
 
-	// Convert to JSON bytes and log
 	jsonBytes, err := json.MarshalIndent(response, "", "  ")
 	if err != nil {
 		log.Printf("JSON marshaling error: %v", err)
@@ -188,10 +240,8 @@ func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Log the JSON string
 	log.Printf("Favourites JSON response: %s", string(jsonBytes))
 
-	// Write the JSON response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonBytes)

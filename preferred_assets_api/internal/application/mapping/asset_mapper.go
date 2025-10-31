@@ -52,6 +52,65 @@ func AssetReqToDomain(req dto.AssetRequest) (domain.Asset, error) {
 	}
 }
 
+// AssetDomainToCreationResponse maps a domain Asset to an AssetCreationResponse DTO
+// This function converts the internal domain representation to the external API response format
+func AssetDomainToCreationResponse(asset domain.Asset) dto.AssetCreationResponse {
+	base := dto.AssetBaseResponse{
+		ID:          asset.GetID(),
+		Type:        asset.GetType().String(),
+		Title:       asset.GetTitle(),
+		Description: asset.GetDescription(),
+		CreatedAt:   asset.GetCreatedAt(),
+		UpdatedAt:   asset.GetUpdatedAt(),
+	}
+
+	switch a := asset.(type) {
+	case *domain.Audience:
+		return dto.AssetCreationResponse{
+			AssetBaseResponse: base,
+			Gender:            safeRefString(a.Gender),
+			BirthCountry:      safeRefString(a.BirthCountry),
+			AgeGroup:          safeRefString(a.AgeGroup),
+			HoursSocial:       safeRefInt(a.HoursSocial),
+			PurchasesLastMo:   safeRefInt(a.PurchasesLastMo),
+		}
+
+	case *domain.Chart:
+		return dto.AssetCreationResponse{
+			AssetBaseResponse: base,
+			AxesTitles:        a.AxesTitles,
+			Data:              a.Data,
+		}
+
+	case *domain.Insight:
+		return dto.AssetCreationResponse{
+			AssetBaseResponse: base,
+			// Insight-specific fields can be added here as needed
+		}
+
+	default:
+		// Fallback for unknown types - return base response only
+		return dto.AssetCreationResponse{
+			AssetBaseResponse: base,
+		}
+	}
+}
+
+// Helper functions for safe referencing
+func safeRefString(s string) *string {
+	if s == "" {
+		return nil
+	}
+	return &s
+}
+
+func safeRefInt(i int) *int {
+	if i == 0 {
+		return nil
+	}
+	return &i
+}
+
 // Helper functions for safe dereferencing
 func safeDerefString(s *string) string {
 	if s == nil {

@@ -12,7 +12,7 @@ type UserService interface {
 }
 
 type AssetService interface {
-	CreateAsset(asset domain.Asset) error
+	CreateAsset(asset domain.Asset) (domain.Asset, error)
 	DeleteAsset(id string) error
 }
 

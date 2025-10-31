@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/http/middleware"
@@ -20,7 +22,17 @@ func NewAssetHandler(s ports.AssetService) *AssetHandler {
 	return &AssetHandler{service: s}
 }
 
-// Create implements ports.AssetHandler.
+// Create creates a new asset
+// swagger:operation POST /assets assets createAsset
+//
+// Create Asset
+// ---
+// responses:
+//
+//	201: AssetCreationSuccessResponse
+//	400: ValidationErrorResponse
+//	405: MethodErrorResponse
+//	500: ServerErrorResponse
 func (h *AssetHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -39,18 +51,39 @@ func (h *AssetHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.service.CreateAsset(asset)
+	createdAsset, err := h.service.CreateAsset(asset)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	response := mapping.AssetDomainToCreationResponse(createdAsset)
+
+	jsonBytes, err := json.MarshalIndent(response, "", "  ")
+	if err != nil {
+		log.Printf("JSON marshaling error: %v", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("Assets JSON response: %s", string(jsonBytes))
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	// Optionally return the created asset
-	// json.NewEncoder(w).Encode(created)
+	w.Write(jsonBytes)
 }
 
-// Delete implements ports.AssetHandler.
+// Delete removes an asset by ID
+// swagger:operation DELETE /assets/{assetId} assets deleteAsset
+//
+// Delete Asset
+// ---
+// responses:
+//
+//	204: NoContentResponse
+//	400: ValidationErrorResponse
+//	405: MethodErrorResponse
+//	500: ServerErrorResponse
 func (h *AssetHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -70,32 +103,4 @@ func (h *AssetHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-}
-
-// List implements ports.AssetHandler.
-func (h *AssetHandler) List(w http.ResponseWriter, r *http.Request) {
-	panic("unimplemented")
-}
-
-// Get implements ports.AssetHandler (if you have a Get method in your interface)
-func (h *AssetHandler) Get(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	assetID := chi.URLParam(r, "assetId")
-	if assetID == "" {
-		http.Error(w, "missing asset id", http.StatusBadRequest)
-		return
-	}
-
-	// This would require a GetAsset method in your service interface
-	// asset, err := h.service.GetAsset(assetID)
-	// if err != nil {
-	//     http.Error(w, err.Error(), http.StatusNotFound)
-	//     return
-	// }
-
-	// json.NewEncoder(w).Encode(asset)
 }

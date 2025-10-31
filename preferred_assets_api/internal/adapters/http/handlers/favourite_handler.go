@@ -20,7 +20,17 @@ func NewFavouriteHandler(s ports.FavouriteService) *FavouriteHandler {
 	return &FavouriteHandler{service: s}
 }
 
-// Create implements ports.FavouriteHandler.
+// Create adds a favourite for a user
+// swagger:operation POST /favourites favourites createFavourite
+//
+// Create Favourite
+// ---
+// responses:
+//
+//	201: NoContentResponse
+//	400: ValidationErrorResponse
+//	405: MethodErrorResponse
+//	500: ServerErrorResponse
 func (f *FavouriteHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -42,10 +52,19 @@ func (f *FavouriteHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	//json.NewEncoder(w).Encode(created)
 }
 
-// Delete implements ports.FavouriteHandler.
+// Delete removes a favourite for a user
+// swagger:operation DELETE /favourites/{userId}/{assetId} favourites deleteFavourite
+//
+// Delete Favourite
+// ---
+// responses:
+//
+//	200: NoContentResponse
+//	400: ValidationErrorResponse
+//	404: NotFoundResponse
+//	405: MethodErrorResponse
 func (f *FavouriteHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)

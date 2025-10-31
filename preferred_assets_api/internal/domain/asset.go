@@ -46,6 +46,20 @@ func ParseAssetType(s string) (AssetType, error) {
 	}
 }
 
+// String returns the string representation of the AssetType
+func (at AssetType) String() string {
+	switch at {
+	case AssetTypeAudience:
+		return "audience"
+	case AssetTypeChart:
+		return "chart"
+	case AssetTypeInsight:
+		return "insight"
+	default:
+		return "unknown"
+	}
+}
+
 // Common Getter methods
 func (a AssetBase) GetID() string           { return a.ID }
 func (a AssetBase) GetType() AssetType      { return a.Type }

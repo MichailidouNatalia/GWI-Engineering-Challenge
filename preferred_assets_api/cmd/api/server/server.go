@@ -96,6 +96,12 @@ func (application *App) Run() error {
 			Post("/favourites", application.FavouriteHandler.Create)
 		apiRouter.With(middleware.RequireAnyRole("Users")).
 			Delete("/favourites/{userId}/assets/{assetId}", application.FavouriteHandler.Delete)
+
+			//Group Assets
+		apiRouter.With(middleware.RequireAnyRole("Administrators")).
+			Post("/assets", application.AssetHandler.Create)
+		apiRouter.With(middleware.RequireAnyRole("Administrators")).
+			Delete("/assets/{id}", application.AssetHandler.Delete)
 	})
 
 	router.Get("/swagger/*", httpSwagger.WrapHandler)

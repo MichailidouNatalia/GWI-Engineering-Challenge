@@ -29,7 +29,7 @@ type FavouriteResponse struct {
 
 	// The type of the asset (e.g., audience, chart, insight)
 	// example: "chart"
-	AssetType string `json:"asset_type"`
+	AssetType string `json:"asset_type,omitempty"`
 
 	// Timestamp when the favourite was created
 	// example: "2025-10-30T15:04:05Z"
