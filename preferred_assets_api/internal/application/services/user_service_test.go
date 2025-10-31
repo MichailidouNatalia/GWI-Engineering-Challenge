@@ -75,7 +75,9 @@ func (m *mockAssetRepository) GetByIDs(ids []string) ([]entities.AssetEntity, er
 	return assets, nil
 }
 
-func (m *mockAssetRepository) Save(asset entities.AssetEntity) error           { return nil }
+func (m *mockAssetRepository) Save(asset entities.AssetEntity) (entities.AssetEntity, error) {
+	return nil, nil
+}
 func (m *mockAssetRepository) GetByID(id string) (entities.AssetEntity, error) { return nil, nil }
 func (m *mockAssetRepository) GetAll() ([]entities.AssetEntity, error)         { return nil, nil }
 func (m *mockAssetRepository) GetByType(assetType entities.AssetType) ([]entities.AssetEntity, error) {

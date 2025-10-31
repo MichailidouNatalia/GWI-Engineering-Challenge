@@ -50,7 +50,7 @@ type AssetRequest struct {
 
 	// Average hours spent on social media per day (optional)
 	// example: 4
-	HoursSocial *int `json:"hours_social,omitempty"`
+	HoursSocial *float64 `json:"hours_social,omitempty"`
 
 	// Number of purchases made in the last month (optional)
 	// example: 12
@@ -114,7 +114,7 @@ type AssetCreationResponse struct {
 
 	// HoursSocial represents hours spent on social media per week (only for audience assets)
 	// example: 15
-	HoursSocial *int `json:"hours_social,omitempty"`
+	HoursSocial *float64 `json:"hours_social,omitempty"`
 
 	// PurchasesLastMo represents number of purchases in the last month (only for audience assets)
 	// example: 3

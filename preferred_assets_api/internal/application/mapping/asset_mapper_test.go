@@ -14,7 +14,7 @@ func TestAssetReqToDomain_Audience(t *testing.T) {
 	gender := "female"
 	birthCountry := "Canada"
 	ageGroup := "25-34"
-	hours := 4
+	hours := 4.5
 	purchases := 12
 	req := dto.AssetRequest{
 		ID:              "a1",
@@ -41,7 +41,7 @@ func TestAssetReqToDomain_Audience(t *testing.T) {
 	if !ok {
 		t.Fatalf("expected Audience, got %T", asset)
 	}
-	if aud.GetID() != "a1" || aud.Gender != "female" || aud.BirthCountry != "Canada" || aud.AgeGroup != "25-34" || aud.HoursSocial != 4 || aud.PurchasesLastMo != 12 {
+	if aud.GetID() != "a1" || aud.Gender != "female" || aud.BirthCountry != "Canada" || aud.AgeGroup != "25-34" || aud.HoursSocial != 4.5 || aud.PurchasesLastMo != 12 {
 		t.Errorf("audience fields not mapped correctly: %+v", aud)
 	}
 }
@@ -146,7 +146,7 @@ func TestAssetReqToDomain_NilPointers(t *testing.T) {
 func TestAssetReqToDomain_MultipleAssets(t *testing.T) {
 	// Arrange
 	gender := "male"
-	hours := 5
+	hours := 5.5
 	reqs := []dto.AssetRequest{
 		{
 			ID:          "a1",

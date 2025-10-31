@@ -18,9 +18,9 @@ type mockAssetServiceRepo struct {
 	deleteErr    error
 }
 
-func (m *mockAssetServiceRepo) Save(asset entities.AssetEntity) error {
+func (m *mockAssetServiceRepo) Save(asset entities.AssetEntity) (entities.AssetEntity, error) {
 	m.saveCalled = true
-	return m.saveErr
+	return nil, m.saveErr
 }
 
 func (m *mockAssetServiceRepo) Delete(id string) error {
@@ -62,7 +62,7 @@ func TestCreateAsset_Success(t *testing.T) {
 
 	// Act
 	start := time.Now().UTC()
-	err := service.CreateAsset(asset)
+	_, err := service.CreateAsset(asset)
 	end := time.Now().UTC()
 
 	// Assert
@@ -90,7 +90,7 @@ func TestCreateAsset_SaveFails(t *testing.T) {
 	asset := newValidInsight()
 
 	// Act
-	err := service.CreateAsset(asset)
+	_, err := service.CreateAsset(asset)
 
 	// Assert
 	if err == nil {

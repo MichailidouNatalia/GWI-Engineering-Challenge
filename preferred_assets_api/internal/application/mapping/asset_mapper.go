@@ -30,7 +30,7 @@ func AssetReqToDomain(req dto.AssetRequest) (domain.Asset, error) {
 			Gender:          safeDerefString(req.Gender),
 			BirthCountry:    safeDerefString(req.BirthCountry),
 			AgeGroup:        safeDerefString(req.AgeGroup),
-			HoursSocial:     safeDerefInt(req.HoursSocial),
+			HoursSocial:     safeDerefFloat64(req.HoursSocial),
 			PurchasesLastMo: safeDerefInt(req.PurchasesLastMo),
 		}, nil
 
@@ -71,7 +71,7 @@ func AssetDomainToCreationResponse(asset domain.Asset) dto.AssetCreationResponse
 			Gender:            safeRefString(a.Gender),
 			BirthCountry:      safeRefString(a.BirthCountry),
 			AgeGroup:          safeRefString(a.AgeGroup),
-			HoursSocial:       safeRefInt(a.HoursSocial),
+			HoursSocial:       safeRefFloat64(a.HoursSocial),
 			PurchasesLastMo:   safeRefInt(a.PurchasesLastMo),
 		}
 
@@ -120,6 +120,18 @@ func safeDerefString(s *string) string {
 }
 
 func safeDerefInt(i *int) int {
+	if i == nil {
+		return 0
+	}
+	return *i
+}
+func safeRefFloat64(f float64) *float64 {
+	if f == 0 {
+		return nil
+	}
+	return &f
+}
+func safeDerefFloat64(i *float64) float64 {
 	if i == nil {
 		return 0
 	}

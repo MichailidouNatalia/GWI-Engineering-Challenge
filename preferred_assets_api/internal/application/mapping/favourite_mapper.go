@@ -73,7 +73,7 @@ func mapAudienceToDTO(audience *domain.Audience) dto.AssetRequest {
 		Gender:          &audience.Gender,
 		BirthCountry:    &audience.BirthCountry,
 		AgeGroup:        &audience.AgeGroup,
-		HoursSocial:     &audience.HoursSocial,
+		HoursSocial:     safeRefFloat64(audience.HoursSocial),
 		PurchasesLastMo: &audience.PurchasesLastMo,
 		CreatedAt:       audience.GetCreatedAt(),
 		UpdatedAt:       audience.GetUpdatedAt(),

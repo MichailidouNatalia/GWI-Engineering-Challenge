@@ -7,11 +7,11 @@ import (
 
 type AudienceEntity struct {
 	AssetBaseEntity
-	Gender          string `db:"gender"`
-	BirthCountry    string `db:"birth_country"`
-	AgeGroup        string `db:"age_group"`
-	HoursSocial     int    `db:"hours_social"`
-	PurchasesLastMo int    `db:"purchases_last_mo"`
+	Gender          string  `db:"gender"`
+	BirthCountry    string  `db:"birth_country"`
+	AgeGroup        string  `db:"age_group"`
+	HoursSocial     float64 `db:"hours_social"`
+	PurchasesLastMo int     `db:"purchases_last_mo"`
 }
 
 // Validate Data Consistency Validation

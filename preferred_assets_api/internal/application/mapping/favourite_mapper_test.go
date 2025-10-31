@@ -53,7 +53,7 @@ func TestFavouriteToResponse_WithAudience(t *testing.T) {
 		Gender:          "M",
 		BirthCountry:    "US",
 		AgeGroup:        "25-34",
-		HoursSocial:     4,
+		HoursSocial:     4.5,
 		PurchasesLastMo: 12,
 	}
 
