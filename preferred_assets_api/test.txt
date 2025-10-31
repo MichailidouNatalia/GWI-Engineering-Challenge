@@ -1,1 +1,0 @@
-kc.sh export --dir=/opt/keycloak/data/import --users=realm_file --realm=preferred-assets-realm --optimized
