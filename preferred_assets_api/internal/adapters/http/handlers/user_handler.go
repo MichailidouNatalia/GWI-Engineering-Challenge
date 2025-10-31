@@ -23,16 +23,18 @@ func NewUserHandler(s ports.UserService) *UserHandler {
 }
 
 // Create creates a new user
-// swagger:operation POST /users users createUser
-//
-// Create User
-// ---
-// responses:
-//
-//	201: NoContentResponse
-//	400: ValidationErrorResponse
-//	405: MethodErrorResponse
-//	500: ServerErrorResponse
+// @Summary Create a new user
+// @Description Creates a new user account with the provided information
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateUserRequest true "User creation request"
+// @Success 201 {object} dto.UserResponse "User created successfully"
+// @Failure 400 {string} string "Invalid input data"
+// @Failure 405 {string} string "Method not allowed"
+// @Failure 500 {string} string "Internal server error"
+// @Security BearerAuth
+// @Router /users [post]
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -61,16 +63,18 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Get retrieves a user by ID
-// swagger:operation GET /users/{id} users getUser
-//
-// Get User
-// ---
-// responses:
-//
-//	200: UserResponse
-//	400: ValidationErrorResponse
-//	404: NotFoundResponse
-//	405: MethodErrorResponse
+// @Summary Get a user by ID
+// @Description Retrieves user details for the specified user ID
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} dto.UserResponse "User found successfully"
+// @Failure 400 {string} string "Invalid user ID"
+// @Failure 404 {string} string "User not found"
+// @Failure 405 {string} string "Method not allowed"
+// @Security BearerAuth
+// @Router /users/{id} [get]
 func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -96,15 +100,16 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 // List retrieves all users
-// swagger:operation GET /users users listUsers
-//
-// List Users
-// ---
-// responses:
-//
-//	200: UserListResponse
-//	405: MethodErrorResponse
-//	500: ServerErrorResponse
+// @Summary Get all users
+// @Description Retrieves a list of all users in the system
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Success 200 {array} dto.UserResponse "List of users retrieved successfully"
+// @Failure 405 {string} string "Method not allowed"
+// @Failure 500 {string} string "Internal server error"
+// @Security BearerAuth
+// @Router /users [get]
 func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -124,16 +129,18 @@ func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete removes a user by ID
-// swagger:operation DELETE /users/{id} users deleteUser
-//
-// Delete User
-// ---
-// responses:
-//
-//	200: NoContentResponse
-//	400: ValidationErrorResponse
-//	404: NotFoundResponse
-//	405: MethodErrorResponse
+// @Summary Delete a user
+// @Description Permanently removes a user from the system
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 "User deleted successfully"
+// @Failure 400 {string} string "Invalid user ID"
+// @Failure 404 {string} string "User not found"
+// @Failure 405 {string} string "Method not allowed"
+// @Security BearerAuth
+// @Router /users/{id} [delete]
 func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -154,17 +161,20 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update modifies a user by ID
-// swagger:operation PUT /users/{id} users updateUser
-//
-// Update User
-// ---
-// responses:
-//
-//	200: UpdateSuccessResponse
-//	400: ValidationErrorResponse
-//	404: NotFoundResponse
-//	405: MethodErrorResponse
-//	500: ServerErrorResponse
+// @Summary Update a user
+// @Description Updates user information for the specified user ID
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param request body dto.UpdateUserRequest true "User update request"
+// @Success 200 {string} string "User updated successfully"
+// @Failure 400 {string} string "Invalid input data"
+// @Failure 404 {string} string "User not found"
+// @Failure 405 {string} string "Method not allowed"
+// @Failure 500 {string} string "Internal server error"
+// @Security BearerAuth
+// @Router /users/{id} [put]
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut && r.Method != http.MethodPatch {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -202,17 +212,19 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetFavourites retrieves user favourites
-// swagger:operation GET /users/{id}/favourites users getUserFavourites
-//
-// Get User Favourites
-// ---
-// responses:
-//
-//	200: FavouriteListResponse
-//	400: ValidationErrorResponse
-//	404: NotFoundResponse
-//	405: MethodErrorResponse
-//	500: ServerErrorResponse
+// @Summary Get user favourites
+// @Description Retrieves all favourite assets for the specified user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {array} dto.FavouriteResponse "User favourites retrieved successfully"
+// @Failure 400 {string} string "Invalid user ID"
+// @Failure 404 {string} string "Favourites not found"
+// @Failure 405 {string} string "Method not allowed"
+// @Failure 500 {string} string "Internal server error"
+// @Security BearerAuth
+// @Router /users/{id}/favourites [get]
 func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)

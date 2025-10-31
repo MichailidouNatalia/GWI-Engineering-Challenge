@@ -23,16 +23,18 @@ func NewAssetHandler(s ports.AssetService) *AssetHandler {
 }
 
 // Create creates a new asset
-// swagger:operation POST /assets assets createAsset
-//
-// Create Asset
-// ---
-// responses:
-//
-//	201: AssetCreationSuccessResponse
-//	400: ValidationErrorResponse
-//	405: MethodErrorResponse
-//	500: ServerErrorResponse
+// @Summary Create a new asset
+// @Description Creates a new asset of specified type (audience, chart, or insight)
+// @Tags Assets
+// @Accept json
+// @Produce json
+// @Param request body dto.AssetRequest true "Asset creation request"
+// @Success 201 {object} dto.AssetCreationResponse
+// @Failure 400 {string} string "Invalid input data"
+// @Failure 405 {string} string "Method not allowed"
+// @Failure 500 {string} string "Internal server error"
+// @Security BearerAuth
+// @Router /assets [post]
 func (h *AssetHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -74,16 +76,18 @@ func (h *AssetHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete removes an asset by ID
-// swagger:operation DELETE /assets/{assetId} assets deleteAsset
-//
-// Delete Asset
-// ---
-// responses:
-//
-//	204: NoContentResponse
-//	400: ValidationErrorResponse
-//	405: MethodErrorResponse
-//	500: ServerErrorResponse
+// @Summary Delete an asset
+// @Description Permanently removes an asset from the system
+// @Tags Assets
+// @Accept json
+// @Produce json
+// @Param assetId path string true "Asset ID"
+// @Success 204 "Asset deleted successfully"
+// @Failure 400 {string} string "Invalid asset ID"
+// @Failure 405 {string} string "Method not allowed"
+// @Failure 500 {string} string "Internal server error"
+// @Security BearerAuth
+// @Router /assets/{assetId} [delete]
 func (h *AssetHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)

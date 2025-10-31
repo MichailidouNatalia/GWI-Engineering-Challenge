@@ -21,16 +21,18 @@ func NewFavouriteHandler(s ports.FavouriteService) *FavouriteHandler {
 }
 
 // Create adds a favourite for a user
-// swagger:operation POST /favourites favourites createFavourite
-//
-// Create Favourite
-// ---
-// responses:
-//
-//	201: NoContentResponse
-//	400: ValidationErrorResponse
-//	405: MethodErrorResponse
-//	500: ServerErrorResponse
+// @Summary Add a favourite
+// @Description Adds an asset to a user's favourites list
+// @Tags Favourites
+// @Accept json
+// @Produce json
+// @Param request body dto.FavouriteRequest true "Favourite creation request"
+// @Success 201 "Favourite added successfully"
+// @Failure 400 {string} string "Invalid input data"
+// @Failure 405 {string} string "Method not allowed"
+// @Failure 500 {string} string "Internal server error"
+// @Security BearerAuth
+// @Router /favourites [post]
 func (f *FavouriteHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -55,16 +57,19 @@ func (f *FavouriteHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete removes a favourite for a user
-// swagger:operation DELETE /favourites/{userId}/{assetId} favourites deleteFavourite
-//
-// Delete Favourite
-// ---
-// responses:
-//
-//	200: NoContentResponse
-//	400: ValidationErrorResponse
-//	404: NotFoundResponse
-//	405: MethodErrorResponse
+// @Summary Remove a favourite
+// @Description Removes an asset from a user's favourites list
+// @Tags Favourites
+// @Accept json
+// @Produce json
+// @Param userId path string true "User ID"
+// @Param assetId path string true "Asset ID"
+// @Success 200 "Favourite removed successfully"
+// @Failure 400 {string} string "Invalid user ID or asset ID"
+// @Failure 404 {string} string "User or favourite not found"
+// @Failure 405 {string} string "Method not allowed"
+// @Security BearerAuth
+// @Router /favourites/{userId}/{assetId} [delete]
 func (f *FavouriteHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
