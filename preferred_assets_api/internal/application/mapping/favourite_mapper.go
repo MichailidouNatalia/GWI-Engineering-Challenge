@@ -64,24 +64,24 @@ func mapAssetToDTO(asset domain.Asset) interface{} {
 	}
 }
 
-func mapAudienceToDTO(audience *domain.Audience) dto.AudienceResponse {
-	return dto.AudienceResponse{
+func mapAudienceToDTO(audience *domain.Audience) dto.AssetRequest {
+	return dto.AssetRequest{
 		ID:              audience.GetID(),
 		Type:            assetTypeToString(audience.Type),
 		Title:           audience.GetTitle(),
 		Description:     audience.GetDescription(),
-		Gender:          audience.Gender,
-		BirthCountry:    audience.BirthCountry,
-		AgeGroup:        audience.AgeGroup,
-		HoursSocial:     audience.HoursSocial,
-		PurchasesLastMo: audience.PurchasesLastMo,
+		Gender:          &audience.Gender,
+		BirthCountry:    &audience.BirthCountry,
+		AgeGroup:        &audience.AgeGroup,
+		HoursSocial:     &audience.HoursSocial,
+		PurchasesLastMo: &audience.PurchasesLastMo,
 		CreatedAt:       audience.GetCreatedAt(),
 		UpdatedAt:       audience.GetUpdatedAt(),
 	}
 }
 
-func mapChartToDTO(chart *domain.Chart) dto.ChartResponse {
-	return dto.ChartResponse{
+func mapChartToDTO(chart *domain.Chart) dto.AssetRequest {
+	return dto.AssetRequest{
 		ID:          chart.GetID(),
 		Type:        assetTypeToString(chart.Type),
 		Title:       chart.GetTitle(),
@@ -93,13 +93,13 @@ func mapChartToDTO(chart *domain.Chart) dto.ChartResponse {
 	}
 }
 
-func mapInsightToDTO(insight *domain.Insight) dto.InsightResponse {
-	return dto.InsightResponse{
+func mapInsightToDTO(insight *domain.Insight) dto.AssetRequest {
+	return dto.AssetRequest{
 		ID:          insight.GetID(),
 		Type:        assetTypeToString(insight.Type),
 		Title:       insight.GetTitle(),
 		Description: insight.GetDescription(),
-		Text:        insight.Text,
+		Text:        &insight.Text,
 		CreatedAt:   insight.GetCreatedAt(),
 		UpdatedAt:   insight.GetUpdatedAt(),
 	}

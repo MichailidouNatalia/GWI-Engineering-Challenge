@@ -29,7 +29,7 @@ func (usrService UserServiceImpl) GetUserByID(id string) (*domain.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return mapper.UserEntityToDomain(userEntity), nil
+	return mapper.UserEntityToDomain(&userEntity), nil
 }
 
 func (usrService UserServiceImpl) GetAllUsers() ([]domain.User, error) {

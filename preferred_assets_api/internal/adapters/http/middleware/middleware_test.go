@@ -10,11 +10,12 @@ import (
 
 // MockBodyGetter lets you return any DTO for testing
 type MockBodyGetter struct {
-	MockedBody any
+	MockedBody    any
+	ShouldSucceed bool
 }
 
 func (m MockBodyGetter) GetValidatedBody(r *http.Request) (any, bool) {
-	return m.MockedBody, true
+	return m.MockedBody, m.ShouldSucceed
 }
 func TestHandler_CreateUser(t *testing.T) {
 	// Arrange

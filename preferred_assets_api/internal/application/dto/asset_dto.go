@@ -32,6 +32,10 @@ type AssetRequest struct {
 	// example: 2025-01-02T15:30:00Z
 	UpdatedAt time.Time `json:"updated_at"`
 
+	// Text associated with the insight (optional)
+	/// example: This insight highlights key trends in customer behavior.
+	Text *string `json:"text,omitempty"`
+
 	// Gender associated with the audience (optional)
 	// example: female
 	Gender *string `json:"gender,omitempty"`

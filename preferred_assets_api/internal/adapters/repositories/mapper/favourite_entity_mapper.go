@@ -26,8 +26,8 @@ func FavouriteEntityFromDomain(favourite domain.Favourite) entities.FavouriteEnt
 	}
 }
 
-// SafeFavouriteEntityToDomainList converts a list of entity to a list of domain model, handling nil input
-func SafeFavouriteEntityToDomainList(favs []entities.FavouriteEntity) []domain.Favourite {
+// FavouriteEntityToDomainList converts a list of entity to a list of domain model, handling nil input
+func FavouriteEntityToDomainList(favs []entities.FavouriteEntity) []domain.Favourite {
 	if favs == nil {
 		return []domain.Favourite{}
 	}

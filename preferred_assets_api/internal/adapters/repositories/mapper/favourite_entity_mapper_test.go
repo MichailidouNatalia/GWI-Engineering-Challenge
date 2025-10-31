@@ -8,7 +8,7 @@ import (
 	"github.com/MichailidouNatalia/GWI-Engineering-Challenge/preferred_assets_api/internal/adapters/repositories/mapper"
 )
 
-func TestSafeFavouriteEntityToDomain(t *testing.T) {
+func TestFavouriteEntityToDomain(t *testing.T) {
 	now := time.Now().UTC()
 
 	t.Run("happy path", func(t *testing.T) {
@@ -45,7 +45,7 @@ func TestSafeFavouriteEntityToDomain(t *testing.T) {
 	})
 }
 
-func TestSafeFavouriteEntityToDomainList(t *testing.T) {
+func TestFavouriteEntityToDomainList(t *testing.T) {
 	now := time.Now().UTC()
 
 	t.Run("happy path with multiple favourites", func(t *testing.T) {
@@ -56,7 +56,7 @@ func TestSafeFavouriteEntityToDomainList(t *testing.T) {
 		}
 
 		// Act
-		domainList := mapper.SafeFavouriteEntityToDomainList(entitiesList)
+		domainList := mapper.FavouriteEntityToDomainList(entitiesList)
 
 		// Assert
 		if len(domainList) != 2 {
@@ -72,7 +72,7 @@ func TestSafeFavouriteEntityToDomainList(t *testing.T) {
 		var entitiesList []entities.FavouriteEntity
 
 		// Act
-		domainList := mapper.SafeFavouriteEntityToDomainList(entitiesList)
+		domainList := mapper.FavouriteEntityToDomainList(entitiesList)
 
 		// Assert
 		if len(domainList) != 0 {
@@ -82,7 +82,7 @@ func TestSafeFavouriteEntityToDomainList(t *testing.T) {
 
 	t.Run("nil slice input", func(t *testing.T) {
 		// Act
-		domainList := mapper.SafeFavouriteEntityToDomainList(nil)
+		domainList := mapper.FavouriteEntityToDomainList(nil)
 
 		// Assert
 		if len(domainList) != 0 {

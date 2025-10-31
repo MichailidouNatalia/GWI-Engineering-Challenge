@@ -179,7 +179,20 @@ func (h *UserHandler) GetFavourites(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := mapping.FavouritesToResponse(favourites)
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		log.Fatal(err)
+
+	// Convert to JSON bytes and log
+	jsonBytes, err := json.MarshalIndent(response, "", "  ")
+	if err != nil {
+		log.Printf("JSON marshaling error: %v", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
 	}
+
+	// Log the JSON string
+	log.Printf("Favourites JSON response: %s", string(jsonBytes))
+
+	// Write the JSON response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonBytes)
 }
