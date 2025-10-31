@@ -95,13 +95,10 @@ docker compose up --build
 
 ### Running Locally (Alternative)
 If you encounter connectivity issues between the API and Keycloak in Docker:
-
+Stop the preffered_assets_api from docker and keep keycloak runnning
 ```bash
-# Stop Docker services if running
-docker compose down
-
 # Run the API locally
-cd ./preferred_assets_api/cmd/api/main
+cd .{saved folder}/preferred_assets_api/cmd/api/main
 go run main.go
 
 # The API will be available at http://localhost:8081
@@ -198,35 +195,18 @@ Full API documentation is available via Swagger UI when the application is runni
 - Swagger JSON: `http://localhost:8081/swagger/doc.json`
 - Interactive documentation can be viewed using Swagger UI tools
 
-## Project Structure
-
-```
-preferred-assets-api/
-├── cmd/
-│   └── api/
-│       └── main/
-│           └── main.go          # Application entry point
-├── internal/
-│   ├── handlers/               # HTTP request handlers
-│   ├── middleware/             # Authentication middleware
-│   ├── models/                 # Data models
-│   ├── services/               # Business logic
-│   └── storage/                # Data storage interfaces
-├── docker-compose.yml          # Multi-container setup
-├── Dockerfile                  # API container definition
-└── README.md                   # This file
-```
-
 ## Development
 
 ### Running Tests
 ```bash
+cd .{saved folder}/preferred_assets_api/cmd/api/main
 go test ./...
 ```
 
 ### Building Locally
 ```bash
-go build -o preferred-assets-api ./cmd/api/main
+cd .{saved folder}/preferred_assets_api/cmd/api/main
+go build -o preferred-assets-api .
 ```
 
 ## Configuration
