@@ -24,7 +24,10 @@ func TestHandler_CreateUser(t *testing.T) {
 		Email:    "alice@example.com",
 		Password: "password123",
 	}
-	middleware.Body = MockBodyGetter{MockedBody: mockUser}
+	middleware.Body = MockBodyGetter{
+		MockedBody:    mockUser,
+		ShouldSucceed: true,
+	}
 
 	req := &http.Request{} // can be a real request
 	// Act

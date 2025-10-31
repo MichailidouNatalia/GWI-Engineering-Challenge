@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -414,8 +415,8 @@ func TestFavouriteHandler_Delete_EdgeCases(t *testing.T) {
 		mockService := new(MockFavouriteService)
 		handler := NewFavouriteHandler(mockService)
 
-		userID := "user-" + string(make([]byte, 1000))   // Very long user ID
-		assetID := "asset-" + string(make([]byte, 1000)) // Very long asset ID
+		userID := "user-" + strings.Repeat("a", 1000)   // Very long user ID
+		assetID := "asset-" + strings.Repeat("b", 1000) // Very long asset ID
 
 		mockService.On("DeleteFavourite", userID, assetID).Return(nil)
 

@@ -5,7 +5,7 @@ type Audience struct {
 	Gender          string
 	BirthCountry    string
 	AgeGroup        string
-	HoursSocial     int
+	HoursSocial     float64
 	PurchasesLastMo int
 }
 
